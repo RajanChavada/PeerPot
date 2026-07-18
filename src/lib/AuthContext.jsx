@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { removeAccessToken } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
@@ -114,16 +115,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    
-    if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
-    } else {
-      // Just remove the token without redirect
-      base44.auth.logout();
+
+    // Clear the SDK session locally so sign-out stays inside the app.
+    removeAccessToken({});
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.removeItem('token');
+    }
+
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
     }
   };
 
