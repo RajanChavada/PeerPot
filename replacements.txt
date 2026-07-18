@@ -1,0 +1,4 @@
+https://registry.npmjs.org/==>https://registry.npmjs.org/
+registry.npmjs.org==>registry.npmjs.org
+registry==>registry
+example==>example
