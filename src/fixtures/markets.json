@@ -1,0 +1,29 @@
+[
+  {
+    "id": "m-demo",
+    "creatorId": "u-maya",
+    "goal": "Ship 5 PRs to the hackathon repo by Sunday",
+    "creatorStake": 50,
+    "deadlineIso": "2026-07-20T00:00:00Z",
+    "causeId": "c3",
+    "status": "open",
+    "stakes": [
+      { "userId": "u-dev", "side": "back", "amount": 30 },
+      { "userId": "u-sam", "side": "back", "amount": 10 },
+      { "userId": "u-lee", "side": "fade", "amount": 20 }
+    ]
+  },
+  {
+    "id": "m-run",
+    "creatorId": "u-jordan",
+    "goal": "Run 100km this month",
+    "creatorStake": 40,
+    "deadlineIso": "2026-07-31T00:00:00Z",
+    "causeId": "c2",
+    "status": "open",
+    "stakes": [
+      { "userId": "u-dev", "side": "back", "amount": 15 },
+      { "userId": "u-lee", "side": "fade", "amount": 25 }
+    ]
+  }
+]
