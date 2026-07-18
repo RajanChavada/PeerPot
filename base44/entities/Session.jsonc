@@ -1,0 +1,57 @@
+{
+  "name": "Session",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "description": "Name of the private commitment session"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "What this session is for"
+    },
+    "join_code": {
+      "type": "string",
+      "title": "Join Code",
+      "description": "Short code friends use to join"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "active",
+        "closed"
+      ],
+      "default": "active"
+    },
+    "host_name": {
+      "type": "string",
+      "title": "Host Name"
+    },
+    "members": {
+      "type": "array",
+      "title": "Members",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "joined_date": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "title",
+    "join_code"
+  ]
+}

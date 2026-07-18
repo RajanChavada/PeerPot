@@ -1,0 +1,108 @@
+{
+  "name": "Commitment",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "description": "The goal you're committing to"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "More detail about what success looks like"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "enum": [
+        "Career",
+        "Fitness",
+        "Learning",
+        "Creative",
+        "Health",
+        "Social",
+        "Finance",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "stake_amount": {
+      "type": "number",
+      "title": "Stake Amount",
+      "default": 0,
+      "description": "Stablecoin amount you're staking"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Deadline"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "active",
+        "succeeded",
+        "failed",
+        "pending_resolution"
+      ],
+      "default": "active"
+    },
+    "creator_name": {
+      "type": "string",
+      "title": "Creator Name"
+    },
+    "backers": {
+      "type": "array",
+      "title": "Backers",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "back",
+              "doubt"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "pool_total": {
+      "type": "number",
+      "title": "Pool Total",
+      "default": 0
+    },
+    "back_total": {
+      "type": "number",
+      "title": "Back Total",
+      "default": 0
+    },
+    "doubt_total": {
+      "type": "number",
+      "title": "Doubt Total",
+      "default": 0
+    },
+    "session_id": {
+      "type": "string",
+      "title": "Session",
+      "description": "Private session this goal belongs to (empty = public)"
+    }
+  },
+  "required": [
+    "title",
+    "stake_amount",
+    "deadline"
+  ]
+}
