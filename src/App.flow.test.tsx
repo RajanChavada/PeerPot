@@ -1,5 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
+
+// Force mock flags so tests always use mock adapters, regardless of .env
+vi.mock('./core/config', async (importOriginal) => {
+  const orig = await importOriginal() as Record<string, unknown>
+  return {
+    ...orig,
+    flags: { unifold: false, solana: false, elevenlabs: false, gemini: false },
+    getEnv: () => { throw new Error('tests should not call getEnv') },
+  }
+})
+
 import App from './App'
 
 // R3F Canvas needs WebGL; stub the Pot so the flow renders in jsdom.
@@ -32,13 +43,13 @@ describe('full user flow', () => {
     })
   })
 
-  it('settling with weak evidence funds the cause', async () => {
+  it('settling with weak evidence funds the faders', async () => {
     render(<App />)
     fireEvent.change(screen.getByLabelText(/Deadline evidence/i), { target: { value: 'only 2 done' } })
     fireEvent.click(screen.getByRole('button', { name: /Settle the pot/i }))
     await waitFor(() => {
-      expect(screen.getByText(/cause funded/i)).toBeInTheDocument()
-      expect(screen.getByText(/sent to your cause/i)).toBeInTheDocument()
+      expect(screen.getByText(/faders win/i)).toBeInTheDocument()
+      expect(screen.getAllByText(/won \$/i).length).toBeGreaterThan(0)
     })
   })
 })

@@ -45,6 +45,20 @@ export default function App() {
 
         <section className="flex flex-col gap-4">
           <StakePanel onBack={m.back} onFade={m.fade} disabled={m.phase !== 'open'} />
+
+          <AnimatePresence>
+            {m.error && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="rounded-lg bg-amber-500/20 border border-amber-500/30 px-4 py-2 text-sm text-amber-300"
+              >
+                ⚠️ {m.error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <BackerList stakes={m.market.stakes} />
 
           {m.phase !== 'done' && (
@@ -75,7 +89,7 @@ export default function App() {
                 className="flex flex-col gap-3"
               >
                 <div className={`rounded-xl px-4 py-3 text-center text-lg font-semibold ${m.success ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}`}>
-                  {m.success ? 'Goal met — backers win' : 'Goal missed — cause funded'}
+                  {m.success ? 'Goal met — backers win' : 'Goal missed — faders win'}
                 </div>
                 <ReceiptFeed receipts={m.receipts} />
               </motion.div>

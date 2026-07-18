@@ -44,6 +44,7 @@ function PressureRing({ v }: { v: ReturnType<typeof potVisual> }) {
         strokeLinecap="round"
         stroke={`hsl(${v.hue}, 80%, 55%)`}
         strokeDasharray={C}
+        initial={{ strokeDashoffset: C, opacity: 0.6 }}
         animate={{ strokeDashoffset: C * (1 - v.bloom), opacity: [0.6, 1, 0.6] }}
         transition={{ opacity: { repeat: Infinity, duration: Math.max(0.6, 2 - v.distortSpeed) } }}
       />

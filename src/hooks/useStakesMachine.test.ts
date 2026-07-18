@@ -1,5 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
+
+// Force mock flags so tests always use the mock adapters, regardless of .env
+vi.mock('../core/config', async (importOriginal) => {
+  const orig = await importOriginal() as Record<string, unknown>
+  return {
+    ...orig,
+    flags: { unifold: false, solana: false, elevenlabs: false, gemini: false },
+    getEnv: () => { throw new Error('tests should not call getEnv') },
+  }
+})
+
 import { useStakesMachine } from './useStakesMachine'
 
 describe('useStakesMachine', () => {
@@ -22,10 +33,10 @@ describe('useStakesMachine', () => {
     expect(result.current.success).toBe(true)
     expect(result.current.receipts.length).toBeGreaterThan(0)
   })
-  it('runSettlement with weak evidence fails and routes to cause', async () => {
+  it('runSettlement with weak evidence fails and pays out to faders', async () => {
     const { result } = renderHook(() => useStakesMachine())
     await act(async () => { await result.current.runSettlement('only 2 PRs') })
     expect(result.current.success).toBe(false)
-    expect(result.current.receipts.some(r => r.toLowerCase().includes('cause'))).toBe(true)
+    expect(result.current.receipts.some(r => r.toLowerCase().includes('won $'))).toBe(true)
   })
 })

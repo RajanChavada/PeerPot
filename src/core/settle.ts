@@ -24,7 +24,16 @@ export function settle(market: Market, success: boolean): Payout[] {
     }
     return payouts
   }
-  const payouts: Payout[] = [{ toUserId: null, amount: escrow + support, kind: 'cause' }]
-  for (const f of faders) payouts.push({ toUserId: f.userId, amount: f.amount, kind: 'backer' })
+  // Failure: Faders win the escrow + support pool.
+  if (faders.length === 0) {
+    // No faders? The cause gets the money.
+    return [{ toUserId: null, amount: escrow + support, kind: 'cause' }]
+  }
+
+  const payouts: Payout[] = []
+  for (const f of faders) {
+    const share = doubt > 0 ? (f.amount / doubt) * (escrow + support) : 0
+    payouts.push({ toUserId: f.userId, amount: f.amount + share, kind: 'backer' })
+  }
   return payouts
 }

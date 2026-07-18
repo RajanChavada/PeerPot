@@ -37,10 +37,10 @@ describe('settle', () => {
     const ps = settle(base, false)
     expect(sum(ps)).toBe(110)
   })
-  it('failure: escrow+support go to cause, faders get their stake back', () => {
+  it('failure: faders win escrow+support, no cause payout', () => {
     const ps = settle(base, false)
-    expect(ps.find(p => p.kind === 'cause')!.amount).toBe(90)
-    expect(ps.find(p => p.toUserId === 'c')!.amount).toBe(20)
+    expect(ps.some(p => p.kind === 'cause')).toBe(false)
+    expect(ps.find(p => p.toUserId === 'c')!.amount).toBe(110) // 20 stake + 90 pool
   })
   it('conserves funds on success even with faders but zero backers', () => {
     const noBackers: Market = {
