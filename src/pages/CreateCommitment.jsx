@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Coins, Calendar, FileText, Tag, ArrowLeft, Loader2, Globe } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { sendMockSolanaTransaction } from "@/lib/solanaMock";
+import { unifold } from "@/adapters/unifold";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,11 +62,11 @@ export default function CreateCommitment() {
         doubt_total: 0,
       });
 
-      const signature = await sendMockSolanaTransaction();
+      const depositResult = await unifold.deposit(user?.id || "anonymous", Number(form.stake_amount));
       
       toast({ 
-        title: "Commitment staked on Solana!", 
-        description: `Your goal is live. Signature: ${signature.substring(0, 8)}...` 
+        title: depositResult.mocked ? "Staked (Mock Mode)" : "Commitment staked via Unifold!", 
+        description: `Your goal is live. Reference: ${depositResult.ref}` 
       });
       navigate("/feed");
     } catch (err) {
@@ -287,7 +287,7 @@ export default function CreateCommitment() {
             className="w-full h-14 text-base font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] border-0 rounded-xl"
           >
             {loading ? (
-              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Confirming on Solana...</>
+              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Processing Deposit...</>
             ) : (
               <>Stake {form.stake_amount || 0} USDC & commit</>
             )}
