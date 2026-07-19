@@ -182,8 +182,17 @@ export const base44 = {
   },
   functions: {
     invoke: async (name, data) => {
-      console.log(`[Mock Base44] Invoked function: ${name}`, data)
-      return { data: { success: true } }
+      console.log(`[Base44] Invoking real deployed function: ${name}`, data);
+      const res = await fetch(`/api/functions/${name}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data || {})
+      });
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => '');
+        throw new Error(errorText || res.statusText);
+      }
+      return { data: await res.json() };
     },
     fetch: async (path, init) => {
       console.log(`[Mock Base44] Fetched function: ${path}`, init)
