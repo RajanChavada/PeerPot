@@ -23,7 +23,7 @@ export default function Landing() {
           where your mouth is.
         </h1>
         <p className="text-slate-500 mt-4 max-w-xl mx-auto text-base md:text-lg leading-relaxed">
-          StakeOnIt lets you lock stablecoins behind any personal goal. Friends back you
+          PeerPot lets you lock stablecoins behind any personal goal. Friends back you
           or doubt you — hit the goal and keep your stake, miss it and the doubters split the pool.
         </p>
 

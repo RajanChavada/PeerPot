@@ -21,12 +21,12 @@ export default function Layout() {
       {/* Sidebar - desktop */}
       <aside className="hidden md:flex fixed top-6 bottom-6 left-6 w-64 flex-col rounded-3xl glass-panel z-50 overflow-hidden">
         <div className="flex items-center justify-between px-6 h-24 border-b border-white/50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-              <Target className="w-5 h-5 text-white" />
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
+              <Target className="w-5 h-5" />
             </div>
-            <span className="font-bold text-xl text-slate-800 tracking-tight">StakeOnIt</span>
-          </div>
+            <span className="font-bold text-xl text-slate-800 tracking-tight">PeerPot</span>
+          </Link>
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
           {navItems.map((item) => (
@@ -83,12 +83,12 @@ export default function Layout() {
 
       {/* Mobile top bar */}
       <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-16 px-4 glass-panel border-b-0 rounded-b-2xl">
-        <Link to="/" className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.3)]">
             <Target className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-slate-800 tracking-tight">StakeOnIt</span>
-        </Link>
+          <span className="font-bold text-slate-800 tracking-tight">PeerPot</span>
+        </div>
         <Button asChild size="sm" className="bg-white hover:bg-white/90 text-slate-800 border border-slate-200 shadow-sm">
           <Link to="/create">
             <Plus className="w-4 h-4 mr-1" /> New
