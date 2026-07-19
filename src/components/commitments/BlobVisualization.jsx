@@ -42,8 +42,13 @@ export default function BlobVisualization({ pool = 0, back = 0, doubt = 0, title
   const zoomRef = useRef(3.4);
 
   useEffect(() => {
-    targetCount.current = Math.max(1, Math.min(MAX_COINS, Math.ceil(pool / COIN_VALUE)));
-  }, [pool]);
+    const count = Math.max(1, Math.min(MAX_COINS, Math.ceil(pool / COIN_VALUE)));
+    targetCount.current = count;
+    
+    // Auto-adjust zoom to prevent cutting off large stacks
+    const dynamicZoom = interactive ? 3.4 + (count * 0.015) : 3.0 + (count * 0.025);
+    zoomRef.current = dynamicZoom;
+  }, [pool, interactive]);
 
   useEffect(() => {
     const mount = mountRef.current;
