@@ -34,13 +34,7 @@ export default function Landing() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative bg-ledger-cream shadow-[0_10px_40px_rgba(0,0,0,0.05)] mx-auto max-w-3xl overflow-hidden"
-        style={{
-          maskImage: 'radial-gradient(circle at 10px 10px, transparent 10px, black 11px)',
-          maskSize: '24px 24px',
-          maskPosition: '-12px -12px',
-          border: '1px solid #e2e8f0',
-        }}
+        className="relative bg-ledger-cream shadow-[0_10px_40px_rgba(0,0,0,0.05)] mx-auto max-w-3xl overflow-hidden border border-slate-200"
       >
         <div className="p-8 md:p-14 text-center border-b-2 border-dashed border-slate-300">
           <h1 className="text-6xl md:text-8xl font-display text-ink-black tracking-normal uppercase leading-[0.85] mb-6">
