@@ -90,16 +90,17 @@ export default function CommitmentCard({ commitment }) {
               </div>
             </div>
 
-            {commitment.settlement_signature && (
-              <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs font-medium">
+            {(commitment.settlement_signature || commitment.settlement_unifold_ref) && (
+              <div className="mt-4 pt-3 border-t border-slate-200/60 flex flex-col gap-1.5 text-xs font-medium">
                 <span className="text-slate-500 uppercase tracking-widest text-[9px] font-bold">Settlement Tx</span>
-                {commitment.settlement_signature.startsWith("mock") || commitment.settlement_signature.startsWith("pi_") || commitment.settlement_signature.startsWith("unifold") ? (
-                  <span className="flex items-center gap-1.5 text-blue-600 font-mono text-[10px] bg-blue-50 px-2 py-1 rounded-md border border-blue-200">
+                {commitment.settlement_unifold_ref && (
+                  <span className="flex w-fit items-center gap-1.5 text-blue-600 font-mono text-[10px] bg-blue-50 px-2 py-1 rounded-md border border-blue-200">
                     <Wallet className="w-3.5 h-3.5 text-blue-500" />
-                    Unifold: {commitment.settlement_signature.substring(0, 14)}...
+                    Unifold: {commitment.settlement_unifold_ref.substring(0, 14)}...
                   </span>
-                ) : (
-                  <span className="flex items-center gap-1.5 text-amber-600 font-mono text-[10px] bg-amber-50 px-2 py-1 rounded-md border border-amber-200">
+                )}
+                {commitment.settlement_signature && !commitment.settlement_signature.startsWith("pi_") && (
+                  <span className="flex w-fit items-center gap-1.5 text-amber-600 font-mono text-[10px] bg-amber-50 px-2 py-1 rounded-md border border-amber-200">
                     <Globe className="w-3.5 h-3.5 text-amber-500" />
                     Solana: {commitment.settlement_signature.substring(0, 14)}...
                   </span>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Coins, Calendar, FileText, Tag, ArrowLeft, Loader2, Globe } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { unifold } from "@/adapters/unifold";
+import { sendMockSolanaTransaction } from "@/lib/solanaMock";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,9 +64,10 @@ export default function CreateCommitment() {
       });
 
       const depositResult = await unifold.deposit(user?.id || "anonymous", Number(form.stake_amount));
+      const solanaSignature = await sendMockSolanaTransaction();
       
       toast({ 
-        title: depositResult.mocked ? "Staked (Mock Mode)" : "Commitment staked via Unifold!", 
+        title: "Commitment staked!", 
         description: (
           <div className="flex flex-col gap-1 mt-1">
             <span>Your goal is live!</span>
@@ -73,9 +75,17 @@ export default function CreateCommitment() {
               href={depositResult.mocked ? "#" : `https://dashboard.unifold.io`} 
               target="_blank" 
               rel="noreferrer"
-              className="text-amber-500 underline text-xs font-bold"
+              className="text-amber-500 underline text-xs font-bold flex items-center gap-1"
             >
-              View Reference: {depositResult.ref}
+              Unifold Ref: {depositResult.ref}
+            </a>
+            <a 
+              href={`https://explorer.solana.com/tx/${solanaSignature}?cluster=devnet`} 
+              target="_blank" 
+              rel="noreferrer"
+              className="text-amber-500 underline text-xs font-bold flex items-center gap-1"
+            >
+              Solana Tx: {solanaSignature.substring(0, 16)}...
             </a>
           </div>
         )

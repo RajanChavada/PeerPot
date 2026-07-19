@@ -46,12 +46,14 @@ export default function CommitmentDetail() {
     setActionLoading(side);
     try {
       const depositResult = await unifold.deposit(user?.id || "anonymous", Number(amount));
+      const solanaSignature = await sendMockSolanaTransaction();
       
       const backer = {
         name: name.trim(),
         amount: Number(amount),
         side,
-        signature: depositResult.ref,
+        signature: solanaSignature,
+        unifold_ref: depositResult.ref,
         mocked: depositResult.mocked,
         created_date: new Date().toISOString(),
       };
@@ -93,9 +95,12 @@ export default function CommitmentDetail() {
     setActionLoading(success ? "succeed" : "fail");
     try {
       const depositResult = await unifold.deposit(user?.id || "anonymous", Number(commitment.pool_total || 1));
+      const solanaSignature = await sendMockSolanaTransaction();
+      
       const updated = await base44.entities.Commitment.update(commitment.id, {
         status: success ? "succeeded" : "failed",
-        settlement_signature: depositResult.ref,
+        settlement_signature: solanaSignature,
+        settlement_unifold_ref: depositResult.ref,
         settlement_mocked: depositResult.mocked,
       });
       setCommitment(updated);
@@ -165,25 +170,26 @@ export default function CommitmentDetail() {
           <CategoryBadge category={commitment.category} />
           <StatusBadge status={commitment.status} />
           {commitment.settlement_signature && (
-            commitment.settlement_signature.startsWith("mock") || commitment.settlement_signature.startsWith("pi_") || commitment.settlement_signature.startsWith("unifold") ? (
-              <a
-                href={commitment.settlement_mocked ? "#" : `https://dashboard.unifold.io`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-medium text-violet-600 hover:text-violet-700 hover:underline flex items-center gap-1"
-              >
-                <Wallet className="w-3 h-3" /> View settlement on Unifold ↗
-              </a>
-            ) : (
+            <div className="flex gap-2 ml-2">
+              {commitment.settlement_unifold_ref && (
+                <a
+                  href={commitment.settlement_mocked ? "#" : `https://dashboard.unifold.io`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-violet-600 hover:text-violet-700 hover:underline flex items-center gap-1"
+                >
+                  <Wallet className="w-3 h-3" /> Unifold
+                </a>
+              )}
               <a
                 href={`https://explorer.solana.com/tx/${commitment.settlement_signature}?cluster=devnet`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs font-medium text-violet-600 hover:text-violet-700 hover:underline flex items-center gap-1"
               >
-                <Globe className="w-3 h-3" /> View settlement on Solana ↗
+                <Globe className="w-3 h-3" /> Solana
               </a>
-            )
+            </div>
           )}
         </div>
         <h1 className="text-3xl md:text-5xl font-black text-slate-800 tracking-tighter leading-tight">
@@ -408,24 +414,25 @@ export default function CommitmentDetail() {
                     <p className="text-sm text-slate-500 font-medium">
                       {b.side === "back" ? <span className="text-emerald-600">Backed</span> : <span className="text-rose-600">Doubted</span>} · {formatDeadline(b.created_date)}
                     </p>
-                    {b.signature && (
-                      <div className="flex gap-2">
-                        {b.signature.startsWith("mock") || b.signature.startsWith("pi_") || b.signature.startsWith("unifold") ? (
+                    {(b.signature || b.unifold_ref) && (
+                      <div className="flex flex-col gap-1.5 mt-2">
+                        {b.unifold_ref && (
                           <a 
                             href={b.mocked ? "#" : `https://dashboard.unifold.io`} 
                             target="_blank" 
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-mono text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+                            className="inline-flex w-fit items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-mono text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
                           >
                             <Wallet className="w-3.5 h-3.5 text-blue-500" />
-                            Unifold: {b.signature.substring(0, 16)}...
+                            Unifold: {b.unifold_ref.substring(0, 16)}...
                           </a>
-                        ) : (
+                        )}
+                        {b.signature && !b.signature.startsWith("pi_") && (
                           <a 
                             href={`https://explorer.solana.com/tx/${b.signature}?cluster=devnet`} 
                             target="_blank" 
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-mono text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+                            className="inline-flex w-fit items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-mono text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
                           >
                             <Globe className="w-3.5 h-3.5 text-amber-500" />
                             Solana: {b.signature.substring(0, 16)}...
