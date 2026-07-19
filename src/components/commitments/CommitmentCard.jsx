@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Coins, Clock, TrendingUp, TrendingDown, Users } from "lucide-react";
+import { Coins, Clock, TrendingUp, TrendingDown, Users, Globe, Wallet } from "lucide-react";
 import CategoryBadge from "./CategoryBadge";
 import StatusBadge from "./StatusBadge";
 import BlobVisualization from "./BlobVisualization";
@@ -89,6 +89,23 @@ export default function CommitmentCard({ commitment }) {
                 <span className="font-semibold text-rose-600 flex items-center"><TrendingDown className="w-3 h-3 mr-0.5"/>{doubtTotal}</span>
               </div>
             </div>
+
+            {commitment.settlement_signature && (
+              <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs font-medium">
+                <span className="text-slate-500 uppercase tracking-widest text-[9px] font-bold">Settlement Tx</span>
+                {commitment.settlement_signature.startsWith("mock") || commitment.settlement_signature.startsWith("pi_") || commitment.settlement_signature.startsWith("unifold") ? (
+                  <span className="flex items-center gap-1.5 text-blue-600 font-mono text-[10px] bg-blue-50 px-2 py-1 rounded-md border border-blue-200">
+                    <Wallet className="w-3.5 h-3.5 text-blue-500" />
+                    Unifold: {commitment.settlement_signature.substring(0, 14)}...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-amber-600 font-mono text-[10px] bg-amber-50 px-2 py-1 rounded-md border border-amber-200">
+                    <Globe className="w-3.5 h-3.5 text-amber-500" />
+                    Solana: {commitment.settlement_signature.substring(0, 14)}...
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </Link>
