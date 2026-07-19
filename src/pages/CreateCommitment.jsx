@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { Coins, Calendar, FileText, Tag, ArrowLeft, Loader2, Globe, Lock } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Coins, Calendar, FileText, Tag, ArrowLeft, Loader2, Globe, Lock, Repeat } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { sendMockSolanaTransaction } from "@/lib/solanaMock";
 import { useAuth } from "@/lib/AuthContext";
@@ -27,7 +27,9 @@ export default function CreateCommitment() {
     category: "Career",
     stake_amount: 25,
     deadline: "",
+    frequency: "daily",
   });
+  const [isRecurring, setIsRecurring] = useState(false);
   const [showCustomDate, setShowCustomDate] = useState(false);
 
   const setDeadlinePreset = (days) => {
@@ -48,19 +50,33 @@ export default function CreateCommitment() {
     setLoading(true);
     try {
       const deadlineDate = new Date(form.deadline);
-      await base44.entities.Commitment.create({
-        title: form.title.trim(),
-        description: form.description.trim(),
-        category: form.category,
-        stake_amount: Number(form.stake_amount),
-        deadline: deadlineDate.toISOString(),
-        status: "active",
-        creator_name: user?.full_name || user?.email || "You",
-        backers: [],
-        pool_total: Number(form.stake_amount),
-        back_total: 0,
-        doubt_total: 0,
-      });
+      
+      if (isRecurring) {
+        await base44.entities.RecurringCommitment.create({
+          title: form.title.trim(),
+          description: form.description.trim(),
+          category: form.category,
+          stake_amount: Number(form.stake_amount),
+          frequency: form.frequency,
+          next_spawn_time: deadlineDate.toISOString(),
+          active: true,
+          creator_name: user?.full_name || user?.email || "You",
+        });
+      } else {
+        await base44.entities.Commitment.create({
+          title: form.title.trim(),
+          description: form.description.trim(),
+          category: form.category,
+          stake_amount: Number(form.stake_amount),
+          deadline: deadlineDate.toISOString(),
+          status: "active",
+          creator_name: user?.full_name || user?.email || "You",
+          backers: [],
+          pool_total: Number(form.stake_amount),
+          back_total: 0,
+          doubt_total: 0,
+        });
+      }
 
       const signature = await sendMockSolanaTransaction();
       
@@ -97,6 +113,32 @@ export default function CreateCommitment() {
         <div className="flex items-center gap-3 rounded-2xl px-5 py-4 mb-8 text-sm font-medium glass-panel border-sky-200 text-sky-700 shadow-[0_0_20px_rgba(14,165,233,0.1)]">
           <Globe className="w-5 h-5 shrink-0 text-sky-500" />
           <span>Posting to the <strong className="text-slate-800">public feed</strong> — anyone can see and back this goal.</span>
+        </div>
+
+        {/* Commitment Type Toggle */}
+        <div className="flex p-1 mb-8 bg-white/60 border border-slate-200 rounded-xl w-full max-w-sm mx-auto shadow-sm">
+          <button
+            type="button"
+            onClick={() => setIsRecurring(false)}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${
+              !isRecurring
+                ? "bg-amber-500 text-white shadow-md"
+                : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
+            }`}
+          >
+            One-time Goal
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsRecurring(true)}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+              isRecurring
+                ? "bg-amber-500 text-white shadow-md"
+                : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
+            }`}
+          >
+            <Repeat className="w-4 h-4" /> Recurring Goal
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -180,7 +222,7 @@ export default function CreateCommitment() {
 
             <div className="space-y-2">
               <Label className="flex items-center gap-1.5 font-bold uppercase tracking-widest text-slate-500 text-xs mb-2">
-                <Calendar className="w-3.5 h-3.5 text-amber-500" /> Deadline
+                <Calendar className="w-3.5 h-3.5 text-amber-500" /> {isRecurring ? "First Spawn Time" : "Deadline"}
               </Label>
               <div className="flex gap-2 mb-2">
                 <button
@@ -256,10 +298,48 @@ export default function CreateCommitment() {
                 </div>
               )}
               <p className="text-xs font-medium text-slate-500 pt-1">
-                Pick the exact due date & time. Stake goes to the pool if you miss it.
+                {isRecurring 
+                  ? "When should the first goal start? (It will be created at this time)" 
+                  : "Pick the exact due date & time. Stake goes to the pool if you miss it."}
               </p>
             </div>
           </div>
+
+          <AnimatePresence>
+            {isRecurring && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="space-y-2 pt-2">
+                  <Label className="flex items-center gap-1.5 font-bold uppercase tracking-widest text-slate-500 text-xs mb-2">
+                    <Repeat className="w-3.5 h-3.5 text-amber-500" /> Frequency
+                  </Label>
+                  <div className="flex gap-3">
+                    {["daily", "weekly", "monthly"].map((freq) => (
+                      <button
+                        key={freq}
+                        type="button"
+                        onClick={() => update("frequency", freq)}
+                        className={`flex-1 rounded-xl py-3 text-sm font-bold uppercase tracking-wider transition-all border ${
+                          form.frequency === freq
+                            ? "bg-amber-500 text-white border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+                            : "bg-white/50 text-slate-500 border-slate-200 hover:bg-white hover:text-slate-800 shadow-sm"
+                        }`}
+                      >
+                        {freq}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs font-medium text-slate-500 pt-1">
+                    A new goal will be generated and you'll stake {form.stake_amount || 0} USDC every {form.frequency.replace("ly", "")}.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Preview */}
           <div className="rounded-3xl glass-panel p-6 shadow-xl relative overflow-hidden group">
@@ -289,7 +369,7 @@ export default function CreateCommitment() {
             {loading ? (
               <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Confirming on Solana...</>
             ) : (
-              <>Stake {form.stake_amount || 0} USDC & commit</>
+              <>{isRecurring ? `Setup Recurring Goal (${form.stake_amount || 0} USDC/ea)` : `Stake ${form.stake_amount || 0} USDC & commit`}</>
             )}
           </Button>
         </form>

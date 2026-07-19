@@ -1,0 +1,72 @@
+{
+  "name": "RecurringCommitment",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "description": "The goal you're committing to"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "More detail about what success looks like"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "enum": [
+        "Career",
+        "Fitness",
+        "Learning",
+        "Creative",
+        "Health",
+        "Social",
+        "Finance",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "stake_amount": {
+      "type": "number",
+      "title": "Stake Amount",
+      "default": 0,
+      "description": "Stablecoin amount you're staking"
+    },
+    "frequency": {
+      "type": "string",
+      "title": "Frequency",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "daily"
+    },
+    "next_spawn_time": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Next Spawn Time"
+    },
+    "active": {
+      "type": "boolean",
+      "title": "Active",
+      "default": true
+    },
+    "creator_name": {
+      "type": "string",
+      "title": "Creator Name"
+    },
+    "session_id": {
+      "type": "string",
+      "title": "Session",
+      "description": "Private session this goal belongs to (empty = public)"
+    }
+  },
+  "required": [
+    "title",
+    "stake_amount",
+    "frequency",
+    "next_spawn_time"
+  ]
+}

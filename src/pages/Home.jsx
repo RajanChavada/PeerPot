@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -19,6 +19,13 @@ export default function Home() {
     queryKey: ["commitments"],
     queryFn: () => base44.entities.Commitment.list("-created_date", 50),
   });
+
+  // Silently spawn recurring commitments on load
+  useEffect(() => {
+    base44.functions.invoke("spawn-recurring").catch((err) => {
+      console.error("Failed to spawn recurring commitments:", err);
+    });
+  }, []);
 
   const visible = commitments.filter((c) => {
     if (filter === "active" && c.status !== "active") return false;
