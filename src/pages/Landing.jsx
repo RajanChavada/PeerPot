@@ -4,23 +4,6 @@ import { motion } from "framer-motion";
 import { Lock, Compass, Coins, Users, TrendingUp, ArrowRight, Target, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const FEATURES = [
-  {
-    icon: Coins,
-    title: "Stake real USDC",
-    body: "Put skin in the game. Lock a stake behind any goal you commit to.",
-  },
-  {
-    icon: Users,
-    title: "Friends back or doubt you",
-    body: "Your crew backs your win — or bets against you. Winners split the pool.",
-  },
-  {
-    icon: Shield,
-    title: "Private or public",
-    body: "Run a private room with a join code, or post to the open community feed.",
-  },
-];
 
 export default function Landing() {
   return (
@@ -64,27 +47,8 @@ export default function Landing() {
         </p>
       </motion.div>
 
-      {/* Features */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-14 md:mt-20">
-        {FEATURES.map((f, i) => (
-          <motion.div
-            key={f.title}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 * i }}
-            className="rounded-2xl bg-white ring-1 ring-slate-200/70 p-5"
-          >
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
-              <f.icon className="w-4 h-4 text-primary" />
-            </div>
-            <h3 className="font-semibold text-slate-900 mb-1">{f.title}</h3>
-            <p className="text-sm text-slate-500 leading-relaxed">{f.body}</p>
-          </motion.div>
-        ))}
-      </div>
-
       {/* How it works */}
-      <div className="mt-14 md:mt-20 rounded-2xl bg-slate-50 ring-1 ring-slate-200/70 p-6 md:p-8">
+      <div className="mt-12 rounded-2xl bg-white/50 backdrop-blur-sm ring-1 ring-slate-200/70 p-6 md:p-8">
         <h2 className="text-xl font-bold text-slate-900 mb-5 text-center">How it works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {[
@@ -104,7 +68,7 @@ export default function Landing() {
       </div>
 
       {/* CTA */}
-      <div className="text-center mt-14 md:mt-20">
+      <div className="text-center mt-12 md:mt-16">
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Ready to stake on yourself?</h2>
         <p className="text-slate-500 mt-2">Pick a path below and make it happen.</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
